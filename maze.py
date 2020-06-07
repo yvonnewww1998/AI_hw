@@ -7,7 +7,7 @@ University of Chicago
 dukeleimao@gmail.com
 '''
 
-import numpy as np 
+import numpy as np
 import turtle
 import bisect
 import argparse
@@ -16,13 +16,13 @@ class Maze(object):
 
     def __init__(self, grid_height, grid_width, maze = None, num_rows = None, num_cols = None, wall_prob = None, random_seed = None):
         '''
-        maze: 2D numpy array. 
-        passages are coded as a 4-bit number, with a bit value taking 
-        0 if there is a wall and 1 if there is no wall. 
-        The 1s register corresponds with a square's top edge, 
+        maze: 2D numpy array.
+        passages are coded as a 4-bit number, with a bit value taking
+        0 if there is a wall and 1 if there is no wall.
+        The 1s register corresponds with a square's top edge,
         2s register the right edge,
-        4s register the bottom edge, 
-        and 8s register the left edge. 
+        4s register the bottom edge,
+        and 8s register the left edge.
         (numpy array)
         '''
 		#設定整個畫布大小
@@ -37,8 +37,8 @@ class Maze(object):
             self.fix_maze_boundary()
             self.fix_wall_inconsistency()
         else:
-            assert num_rows is not None and num_cols is not None and 
-			is not None, 'Parameters for random maze should not be None.' 
+            assert num_rows is not None and num_cols is not None and
+			is not None, 'Parameters for random maze should not be None.'
             self.random_maze(num_rows = num_rows, num_cols = num_cols, wall_prob = wall_prob, random_seed = random_seed)
 
         self.height = self.num_rows * self.grid_height
@@ -71,7 +71,7 @@ class Maze(object):
 
     def fix_wall_inconsistency(self, verbose = True): #填牆，每當牆壁有不一致之處時，都應在此地放上牆壁。
         '''
-        Whenever there is a wall inconsistency, put a wall there. 
+        Whenever there is a wall inconsistency, put a wall there.
         '''
         wall_errors = self.check_wall_inconsistency() #引用上面的check_wall_inconsistency()來確認牆是否有不一致的地方
 
@@ -80,7 +80,7 @@ class Maze(object):
 
         for (i,j), error in wall_errors: #針對特並erro代號給予特定方位的牆 in check_wall_inconsistency()
             if error == 'v': #if erro 為verticle：將兩面都給牆(j的2-右邊、j+1的8-左邊)，以獲得一致性
-                self.maze[i,j] |= 2 
+                self.maze[i,j] |= 2
                 self.maze[i,j+1] |= 8
             elif error == 'h': #if erro 為horizonal：將兩面都給牆(i的4-下面、i+1的1-上面)，以獲得一致性
                 self.maze[i,j] |= 4
@@ -91,7 +91,7 @@ class Maze(object):
 
     def fix_maze_boundary(self): #確定maze是有界的
         '''
-        Make sure that the maze is bounded. 
+        Make sure that the maze is bounded.
         '''
 		#把四邊用1/牆填起來(bitwise)
         for i in range(self.num_rows):
@@ -130,7 +130,7 @@ class Maze(object):
 
     def permissibilities(self, cell): #檢查給定單元格的方向是否是被允許的。(ex.有無超出範圍之類的..)
         '''
-        Check if the directions of a given cell are permissible. 
+        Check if the directions of a given cell are permissible.
         Return:
         (up, right, down, left)
         '''
@@ -149,7 +149,7 @@ class Maze(object):
 		# // -> 除
         i = int(y // self.grid_height)
         j = int(x // self.grid_width)
-        d1 = y - y // self.grid_height * self.grid_height 
+        d1 = y - y // self.grid_height * self.grid_height
         while self.permissibilities(cell = (i,j))[0]: #測量此點與上方牆壁的距離：[0]-The 1s register corresponds with a square's top edge
             i -= 1
             d1 += self.grid_height
@@ -197,7 +197,7 @@ class Maze(object):
                 # 0 - east, 90 - north, 180 - west, 270 - south
 
 				# set前進方向為east
-                wally.setheading(0) 
+                wally.setheading(0)
                 if not permissibilities[0]: #如果cell direction沒有不相容
                     wally.down() #開始畫出此wall
                 else:
@@ -223,7 +223,7 @@ class Maze(object):
                 wally.forward(self.grid_width)
 
 				# set前進方向為south
-                wally.setheading(270) 
+                wally.setheading(270)
                 wally.up()
                 if not permissibilities[3]: #如果cell direction沒有不相容
                     wally.down()
@@ -251,7 +251,7 @@ class Maze(object):
                 turtle.setheading(90 - particle.heading) #將畫筆的方向設置為90 - particle.heading。
                 turtle.color(self.weight_to_color(particle.weight)) #調用上面自命的函式weight_to_color()：依照particles的weight去調整顯示的color
                 turtle.stamp() #在當前烏龜位置，將烏龜形狀的副本標記在畫布上。
-        
+
         turtle.update() #Perform a TurtleScreen update. To be used when tracer is turned off. 畫布更新(顯示出新畫好的畫面)
 
     def show_estimated_location(self, particles):
@@ -328,7 +328,7 @@ class Particle(object):
             self.heading = self.add_noise(x = self.heading, std = 360 * 0.05) #改應heading的位置(x)跟方向
 
         self.fix_invalid_particles() #修復無效粒子
-		                                
+
 
     def fix_invalid_particles(self):
 
@@ -414,7 +414,7 @@ class Particle(object):
             self.x = x
             self.y = y
             return True
-        # Move across one grid vertically 
+        # Move across one grid vertically
         elif abs(gi1 - gi2) == 1 and abs(gj1 - gj2) == 0:#if是要垂直的移動到不同網格
             if maze.maze[min(gi1, gi2), gj1] & 4 != 0: #旁邊有牆就不能移
                 return False
@@ -422,7 +422,7 @@ class Particle(object):
                 self.x = x
                 self.y = y
                 return True
-        # Move across one grid horizonally 
+        # Move across one grid horizonally
         elif abs(gi1 - gi2) == 0 and abs(gj1 - gj2) == 1:#if是要水平的移動到不同網格
             if maze.maze[gi1, min(gj1, gj2)] & 2 != 0:#旁邊有牆就不能移
                 return False
@@ -430,7 +430,7 @@ class Particle(object):
                 self.x = x
                 self.y = y
                 return True
-        # Move across grids both vertically and horizonally 
+        # Move across grids both vertically and horizonally
         elif abs(gi1 - gi2) == 1 and abs(gj1 - gj2) == 1: #if是要水平+垂直的移動到不同網格
 
 			#計算要移動的水平距離
@@ -505,7 +505,7 @@ class Robot(Particle):
 class WeightedDistribution(object): #Resampling 會用到
 
     def __init__(self, particles):
-        
+
         accum = 0.0 #初始化accum，計算weight總和
         self.particles = particles #初始化物件(下面會用)
         self.distribution = list() #初始化物件(下面會用)
