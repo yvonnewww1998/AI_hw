@@ -1,5 +1,5 @@
 
-import numpy as np 
+import numpy as np
 import turtle
 import argparse
 import time
@@ -14,7 +14,7 @@ def main(window_width, window_height, num_particles, sensor_limit_ratio, grid_he
     window = turtle.Screen() #利用turtle模組建立出一個初始的畫布，Screen是turtle下的一個Class，此行建立了一個此class的物件
     window.setup (width = window_width, height = window_height) # 設置主窗口的大小。
 
-	# 建立迷宮出的形狀(設定 網格的寬/高度、行列數、牆出現的機率、for隨機的隨機種子)、調用Maze.py的函式
+	# 建立出迷宮的形狀(設定 網格的寬/高度、行列數、牆出現的機率、for隨機的隨機種子)、調用Maze.py的函式
     world = Maze(grid_height = grid_height, grid_width = grid_width, num_rows = num_rows, num_cols = num_cols, wall_prob = wall_prob, random_seed = random_seed)
 
 	#設定Robot-走迷宮的人 的 初始位置
@@ -31,7 +31,7 @@ def main(window_width, window_height, num_particles, sensor_limit_ratio, grid_he
 
     time.sleep(1) #sleep(1)就是等一秒後, 如果被OS排班到我們才會繼續執行這個thread
     world.show_maze() #刷新迷宮畫面
-    
+
     while True:
 
 		#調用Maze.py的read_sensor函式來處理感測環境的部分
@@ -46,11 +46,11 @@ def main(window_width, window_height, num_particles, sensor_limit_ratio, grid_he
         world.show_particles(particles = particles, show_frequency = particle_show_frequency) #顯示出particles(刷新畫面)
         world.show_robot(robot = bob) #顯示出robot(刷新畫面)
         world.show_estimated_location(particles = particles) #顯示出粒子的平均加總位置
-        world.clear_objects() #刪掉所有戳記(all物品除了maze) -> *resample
+        world.clear_objects() #刪掉所有戳記(all物品除了maze) -> move下一步時畫面就要做新的作圖了
 
         # Make sure normalization is not divided by zero 確保標準化的時候分母不是0(不能除)，這裡check完下一段就除了
         if particle_weight_total == 0:
-            particle_weight_total = 1e-8
+            particle_weight_total = 1e-8sSS
 
         # Normalize particle weights 將 每個weight做標準化(除total)
         for particle in particles:
@@ -97,7 +97,7 @@ if __name__ == '__main__': #特此申明的原因：讓檔案在被引用時，不該執行的程式碼不
     num_rows_default = 25 # 迷宮的row數
     num_cols_default = 25 # 迷宮的column數
     wall_prob_default = 0.25 # 牆出現的機率。
-    random_seed_default = 100 # 用於隨機迷宮和粒子過濾器的隨機種子(算是能夠決定迷宮的形狀，有數字的話就是固定的迷宮形狀、None的話每次執行迷宮的樣子就都不一樣)。
+    random_seed_default = 100#用於隨機迷宮和粒子過濾器的隨機種子(算是能夠決定迷宮的形狀，有數字的話就是固定的迷宮形狀、None的話每次執行迷宮的樣子就都不一樣)。
     robot_speed_default = 10 # 機器人在迷宮中的移動速度。
     kernel_sigma_default = 500 # *高斯距離內核的Sigma。
     particle_show_frequency_default = 10 # 迷宮上顯示出顆粒的頻率。
